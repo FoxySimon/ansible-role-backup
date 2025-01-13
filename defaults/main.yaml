@@ -1,0 +1,10 @@
+# Backup repository configuration
+backup_repo_url: "https://example.com/backup-repo.git"
+backup_repo_branch: "main"
+
+# Backup role configuration
+backup_role: "master"  # or "slave"
+
+# Backup schedule
+backup_cron_schedule: "0 */6 * * *"  # Everyday, every 6 hour
+backup_destination: "/backups"
