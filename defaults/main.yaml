@@ -1,10 +1,13 @@
 # Backup repository configuration
-backup_repo_url: "https://example.com/backup-repo.git"
-backup_repo_branch: "main"
+backup_repo_url: "git@github.com:FoxySimon/dotfiles.git"
+backup_repo_branch: "master"
 
 # Backup role configuration
-backup_role: "master"  # or "slave"
+#backup_role: "master"  # or "slave"
 
 # Backup schedule
-backup_cron_schedule: "0 */6 * * *"  # Everyday, every 6 hour
-backup_destination: "/backups"
+#backup_cron_schedule: "0 */6 * * *"  # Everyday, every 6 hour
+backup_destination: "~/.cfg"
+backup_user: "simon"
+
+aliases_file: .shell_aliases

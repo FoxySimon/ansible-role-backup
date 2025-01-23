@@ -1,0 +1,48 @@
+- name: stat .bashrc
+  stat:
+    path: "~/.bashrc"
+  register: bashrc_exists
+
+- name: stat .zshrc
+  stat:
+    path: "~/.zshrc"
+  register: zshrc_exists
+
+- name: register if in .zshrc is sourced .zshrc.local
+  shell: grep -E 'source .*\.zshrc.local' ~/.zshrc
+  ignore_errors: true
+  changed_when: false
+  register: zshrc_sourced
+
+
+- name: set fact file = ~/.zshrc.local when zshrc is sourced .zshrc.local
+  set_fact:
+    zshrc_file: "~/.zshrc.local"
+  when: zshrc_sourced.rc == 0
+
+- name: set fact file = .zshrc else way
+  set_fact:
+    zshrc_file: "~/.zshrc"
+  when: zshrc_sourced.rc != 0 or zshrc_sourced.rc is undefined or zshrc_exists.stat.exists is undefined
+
+- debug:
+     var: "{{ item }}"
+  loop:
+    - "zshrc_exists.stat.exists"
+    - "zshrc_file"
+    - "aliases_file"
+    - "zshrc_sourced.rc"
+    - "zshrc_exists.stat.exists"
+
+- name: ensure correct zshrc file sources aliases
+  lineinfile:
+    path: "{{ item }}"
+    regexp: '.*source {{ aliases_file }}'
+    state: present
+    line: '[[ -r "{{ aliases_file }}" ]] && source "{{ aliases_file }}"'
+    create: true
+  when: zshrc_file is defined
+  loop:
+  - "{{ zshrc_file }}"
+  - "{{ '~/.bashrc' if bashrc_exists.stat.exists else '' }}"
+
