@@ -18,3 +18,15 @@
     line: "alias config='{{ config_command }}'"
     create: yes
     mode: '0644'
+
+- name: Get stdin of config show untracked files
+  shell: "{{ config_command }} config --local status.showUntrackedFiles"
+  changed_when: false
+  register: untracked_files
+
+- debug:
+    var: untracked_files.stdout
+
+- name: set no to showUntrackedFiles if stdout is not 'no'
+  shell: "{{ config_command }} config --local status.showUntrackedFiles no"
+  when: untracked_files.stdout != 'no'
