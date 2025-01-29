@@ -3,3 +3,18 @@
 
 - name: inport task for making sure there is aliases file sourced
   import_tasks: aliases_file.yml
+
+- name: Set fact config command as variable
+  ansible.builtin.set_fact:
+    config_command: "/usr/bin/git --git-dir={{ backup_destination }}/ --work-tree=$HOME"
+
+- name: debug config command
+  debug:
+    var: config_command
+
+- name: Add command to alias file
+  ansible.builtin.lineinfile:
+    path: "~//{{ aliases_file }}"
+    line: "alias config='{{ config_command }}'"
+    create: yes
+    mode: '0644'
