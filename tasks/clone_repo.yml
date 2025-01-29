@@ -1,0 +1,13 @@
+- name: Register backup destination
+  stat:
+    path: "{{ backup_destination }}"
+  register: backup_destination_exists
+
+- name: Clone backup repository
+  remote_user: "{{ backup_user }}"
+  git:
+    repo: "{{ backup_repo_url }}"
+    dest: "{{ backup_destination }}"
+    version: "{{ backup_repo_branch }}"
+    bare: true
+  when: not backup_destination_exists.stat.exists
