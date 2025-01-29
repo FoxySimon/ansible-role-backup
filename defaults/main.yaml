@@ -7,7 +7,7 @@ backup_repo_branch: "master"
 
 # Backup schedule
 #backup_cron_schedule: "0 */6 * * *"  # Everyday, every 6 hour
-backup_destination: "~/.cfg"
 backup_user: "simon"
+backup_destination: "/home/{{ backup_user }}/.cfg"
 
 aliases_file: .shell_aliases
