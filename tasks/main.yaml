@@ -30,3 +30,30 @@
 - name: set no to showUntrackedFiles if stdout is not 'no'
   shell: "{{ config_command }} config --local status.showUntrackedFiles no"
   when: untracked_files.stdout != 'no'
+
+
+- name: Add cron record to pull changes
+  cron:
+    name: "backup_pull"
+    state: present
+    user: "{{ backup_user }}"
+    job: "{{ config_command }} pull"
+    minute: "0"
+
+- name: Add master cron record to commit changes
+  cron:
+    name: "backup_master_commit"
+    state: present
+    user: "{{ backup_user }}"
+    job: "{{ config_command }} commit -am \"Automated backup $(date)\""
+    minute: "0"
+  when: backup_role == "master"
+
+- name: Add master cron record to push changes
+  cron:
+    name: "backup_master_push"
+    state: present
+    user: "{{ backup_user }}"
+    job: "{{ config_command }} push"
+    minute: "0"
+  when: backup_role == "master"
